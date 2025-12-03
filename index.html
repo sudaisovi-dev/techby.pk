@@ -1,26 +1,811 @@
-<h1>Mobile aur Laptop Parts Store</h1>
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techby.pk | Advanced Mobile Store</title>
+    <style>
+        /* ================================================= */
+        /* === 1. Base (Common) Styling & ANIMATIONS === */
+        /* ================================================= */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: #f4f4f4; 
+            overflow-x: hidden; 
+            touch-action: pan-y;
+        }
+        
+        /* 1.1. Pre-loader (Parda) */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1500; overflow: hidden;
+        }
+        .preloader-curtain {
+            position: absolute; top: 0; left: 0; height: 100%; width: 50%;
+            background-color: #000000; 
+            z-index: 1505; 
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1); 
+        }
+        .preloader-curtain.right { left: 50%; } 
+        .curtains-open .preloader-curtain.left { transform: translateX(-100%); }
+        .curtains-open .preloader-curtain.right { transform: translateX(100%); }
 
-<p>Aapki zarurat ke tamam mobile aur laptop parts yahan dastiyab hain. Hum 100% genuine aur quality parts dete hain.</p>
+        .brand-container {
+            position: relative; 
+            text-align: center; color: #ffffff; font-size: 3em; font-weight: bold; letter-spacing: 2px;
+            z-index: 1510; 
+            transform: translateY(-50vh); 
+            opacity: 0;
+            transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease-in;
+        }
 
-<p>Humari services aur parts ki list ke liye neeche dekhiye:</p>
+        .logo-ready {
+            transform: translateY(0); 
+            opacity: 1;
+        }
+        .brand-container img {
+            max-width: 80%; max-height: 100px; object-fit: contain;
+            animation: pulse 1s infinite alternate; 
+        }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
 
-<h2>Products Dastiyab Hain</h2>
-<h3>Mobile Phone Parts</h3>
-<ul>
-    <li>Screens (LCD/AMOLED)</li>
-    <li>Batteries (Original aur High-Capacity)</li>
-    <li>Charging Ports aur Accessories</li>
-</ul>
 
-<h3>Laptop Parts</h3>
-<ul>
-    <li>Keyboards aur Touchpads</li>
-    <li>RAM (DDR3, DDR4) aur SSD/HDD Storage</li>
-    <li>Displays aur Hinges</li>
-    <li>Cooling Fans</li>
-</ul>
+        /* 1.2. Main Website Container (Slide Up) */
+        #main-website {
+            transform: translateY(100vh); 
+            opacity: 0;
+            transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1s ease-out; 
+            padding-top: 60px; /* Header space */
+        }
+        .loaded #main-website {
+            transform: translateY(0); 
+            opacity: 1;
+        }
+        .loaded #preloader { display: none; }
 
-<h2>Humse Raabta Karein (Contact Details)</h2>
-<p><strong>Phone:</strong> 03369039000 </p>
-<p><strong>Email:</strong> Dearcoco89@gmail.com </p>
-<p><strong>Pata:</strong> Saddar, Karachi, Pakistan </p>
+        /* 1.3. Header (Fixed) */
+        header { 
+            background-color: #333; color: white; padding: 10px 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; width: 100%; z-index: 500;
+            box-sizing: border-box; 
+            flex-wrap: wrap; 
+        }
+        header .logo-name { font-size: 1.5em; font-weight: bold; flex-shrink: 0; margin-right: 20px; }
+        
+        /* Search Bar Styling */
+        .search-container {
+            flex-grow: 1; 
+            max-width: 400px;
+            margin: 5px 0;
+            display: flex;
+        }
+        .search-container input[type=text] {
+            width: calc(100% - 70px); 
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px 0 0 20px; 
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .search-container button {
+            width: 70px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 0 20px 20px 0; 
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Loading Spinner CSS */
+        .spinner {
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #ffc107; 
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .cart-container {
+            flex-shrink: 0;
+        }
+        .cart-indicator {
+            background-color: #ffc107; color: #333; padding: 2px 7px; border-radius: 50%; font-size: 0.8em; font-weight: bold; margin-left: 5px;
+        }
+
+        /* 1.4. Main Layout */
+        .container { 
+            display: flex; max-width: 1200px; 
+            margin: 0 auto; padding: 0 20px 20px 20px; 
+            margin-top: 60px; /* Fixed header height adjustment */
+        }
+        .main-content { flex-grow: 1; padding: 20px; }
+        .sidebar { 
+            width: 250px; padding: 20px; background-color: #fff; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-right: 20px; 
+            flex-shrink: 0; 
+        }
+        .sidebar button { display: block; width: 100%; padding: 10px; margin-bottom: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px;}
+        
+        /* ================================================= */
+        /* === 2.1 FEATURED PRODUCT SLIDER (5s Auto Change) === */
+        /* ================================================= */
+        .slider-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 20px auto; 
+            position: relative;
+            overflow: hidden; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 400px; 
+        }
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none; 
+            transition: opacity 1s ease-in-out;
+        }
+        .slide.active {
+            display: block; 
+            opacity: 1;
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            display: block;
+        }
+        /* ================================================= */
+
+        /* ================================================= */
+        /* === 2.2 SECTION BANNER SLIDER (5s Auto Change) === */
+        /* ================================================= */
+        #section-slider-container {
+            position: relative;
+            width: 100%;
+            height: 250px; /* Height for the section banner */
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .section-slide.current {
+            opacity: 1;
+        }
+
+        .section-slide img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5); /* Overlay for text readability */
+            padding: 15px 30px;
+            border-radius: 8px;
+        }
+        
+        .slide-content h3 {
+            margin: 0 0 10px 0;
+            font-size: 2em;
+        }
+        .slide-content p {
+            font-size: 1.1em;
+        }
+        /* ================================================= */
+
+        /* 1.5. Product Grid & Cards */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { 
+            background-color: white; padding: 15px; border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        /* Product Image Styling and Zoom */
+        .product-card img { 
+            width: 100%; height: 200px; object-fit: cover; border-radius: 4px; margin-bottom: 5px; 
+            cursor: pointer; 
+            transition: transform 0.2s ease-out; 
+            touch-action: none; 
+        }
+        .product-card img.zoomed { 
+            transform: scale(1.5); 
+            z-index: 1100; 
+            position: relative; 
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        } 
+
+        /* 1.6. STATUS DROPDOWN STYLING */
+        .status-dropdown-container {
+            position: relative; margin-top: 10px; display: inline-block; width: 80%; 
+        }
+        .status-button {
+            background-color: #007bff; color: white; padding: 8px 12px; border: none; border-radius: 4px;
+            cursor: pointer; width: 100%; font-weight: bold; font-size: 0.9em; margin-bottom: 5px;
+        }
+        .status-options {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            z-index: 10; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 4px; overflow: hidden; width: 120%; margin-top: 5px;
+        }
+
+        .status-options.show { display: block; }
+        .status-options button {
+            display: block; width: 100%; padding: 8px; text-align: center; border: none;
+            cursor: pointer; font-size: 0.8em; transition: background-color 0.2s;
+        }
+        .status-approved { background-color: #d4edda; color: #155724; }
+        .status-nonpta { background-color: #f8d7da; color: #721c24; }
+        .status-official { background-color: #cce5ff; color: #004085; }
+        .status-repair { background-color: #fff3cd; color: #856404; }
+        
+        .status-options button:hover { opacity: 0.8; }
+
+        /* 1.7. Other Stylings */
+        .product-price { 
+            font-size: 1.2em; color: #dc3545; font-weight: bold; margin-bottom: 10px;
+        }
+        /* UPDATED: WHATSAPP CALL BUTTON */
+        .product-actions button.whatsapp-call { 
+            background-color: #25D366; /* WhatsApp Green */
+            color: white; 
+            padding: 10px 15px; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 5px;
+        }
+        .product-actions button.whatsapp-call:hover {
+            background-color: #1DA851;
+        }
+        
+        /* 1.8. Right Floating Sticky Brand Menu */
+        #right-sticky-menu {
+            height: 100%; width: 50px; position: fixed; z-index: 1000; top: 0; right: 0;
+            background-color: #000; overflow-x: hidden; transition: 0.5s;
+            padding-top: 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.5); color: white;
+        }
+        #right-sticky-menu:hover,
+        #right-sticky-menu.active { width: 200px; }
+        #right-sticky-menu h4 {
+            color: white; text-align: center; padding: 10px 0; margin: 0;
+            font-size: 1.1em; writing-mode: vertical-rl; text-orientation: mixed;
+            transition: opacity 0.3s;
+        }
+        #right-sticky-menu:hover h4,
+        #right-sticky-menu.active h4 { writing-mode: horizontal-tb; font-size: 1.4em; opacity: 0; }
+        .brand-list { list-style: none; padding: 0; margin-top: 20px; display: none; }
+        #right-sticky-menu:hover .brand-list,
+        #right-sticky-menu.active .brand-list { display: block; }
+        .brand-list li {
+            padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #222; 
+            display: flex; align-items: center; color: #fff; transition: background-color 0.3s;
+        }
+        .brand-list li:hover { background-color: #333; }
+        .brand-list img { width: 24px; height: 24px; object-fit: contain; margin-right: 10px; background-color: white; border-radius: 50%; }
+
+        /* 1.9. WhatsApp Button & Responsive Queries */
+        #whatsapp-order-btn {
+            background-color: #25D366; color: white; padding: 15px 30px; font-size: 1.5em;
+            border: none; border-radius: 10px; cursor: pointer; display: block; margin: 20px auto;
+            text-decoration: none; text-align: center;
+        }
+        
+        @media (max-width: 1024px) {
+            .container { flex-direction: column; padding: 10px; margin-top: 0; }
+            .sidebar { width: 100%; margin-bottom: 20px; margin-right: 0; order: 2; }
+            .main-content { order: 1; padding: 10px 0; }
+            .product-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+            #right-sticky-menu { display: none; }
+            /* Header ko responsive banaya */
+            header { flex-direction: column; align-items: flex-start; padding: 10px; position: static; height: auto; }
+            header .logo-name { margin-bottom: 10px; }
+            .search-container { order: 3; width: 100%; max-width: 100%; margin: 10px 0; }
+            .search-container input[type=text] { width: calc(100% - 70px); }
+            .cart-container { order: 2; margin-left: auto; }
+            #main-website { padding-top: 0; }
+            .status-dropdown-container { width: 100%; }
+            .status-options { width: 100%; left: 0; transform: translateX(0); }
+            .slider-container { height: 200px; margin-top: 10px; } /* Smaller slider on mobile */
+            #section-slider-container { height: 150px; }
+            .slide-content h3 { font-size: 1.4em; }
+            .slide-content p { font-size: 0.9em; }
+        }
+
+        /* 2.3 CONFETTI CONTAINER & ANIMATION */
+        #confetti-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; display: none; overflow: hidden;
+        }
+        .confetti {
+            border-radius: 50%; /* Make them circular */
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="brand-container" id="logo-animate-target">
+            <img src="images/techby_logo.png" 
+                 onerror="this.onerror=null; this.outerHTML='<p class=\'logo-text\'>Techby.pk</p>'" 
+                 alt="Techby.pk Logo">
+        </div>
+        <div class="preloader-curtain left"></div>
+        <div class="preloader-curtain right"></div>
+    </div>
+
+    <div id="right-sticky-menu" onmouseenter="toggleStickyMenu(true)" onmouseleave="toggleStickyMenu(false)" ontouchstart="toggleStickyMenu(true)" ontouchend="toggleStickyMenu(false)">
+        <h4 id="sticky-title">BRANDS</h4>
+        <ul class="brand-list">
+            <li onclick="loadBrand('apple')">
+                <img src="images/apple_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=A'" alt="Apple Logo"> Apple / iPhone
+            </li>
+            <li onclick="loadBrand('samsung')">
+                <img src="images/samsung_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=S'" alt="Samsung Logo"> Samsung
+            </li>
+            <li onclick="loadBrand('xiaomi')">
+                <img src="images/xiaomi_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=X'" alt="Xiaomi Logo"> Xiaomi / Redmi
+            </li>
+            <li onclick="loadBrand('oppo')">
+                <img src="images/oppo_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=O'" alt="Oppo Logo"> Oppo / Vivo
+            </li>
+            <li onclick="loadBrand('huawei')">
+                <img src="images/huawei_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=H'" alt="Huawei Logo"> Huawei / Honor
+            </li>
+            <li onclick="loadBrand('other')">
+                <img src="images/other_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=?'" alt="Other Logo"> Other Brands
+            </li>
+        </ul>
+    </div>
+
+
+    <div id="main-website">
+        
+        <header>
+            <div class="logo-name">**Techby.pk**</div>
+            
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search Mobile, Parts, or Brand..." onkeypress="checkEnter(event)">
+                <button onclick="performSearch()" id="search-button">
+                    <span id="search-text">🔍 Search</span>
+                    <div id="search-spinner" class="spinner" style="display: none;"></div>
+                </button>
+            </div>
+            
+            <div class="cart-container">
+                <button onclick="alert('Cart Page - Checkout Process')">🛒 Cart <span class="cart-indicator" id="cart-count">0</span></button>
+            </div>
+        </header>
+
+        <div class="slider-container">
+            <div class="slide active">
+                <img src="images/slider/slide1.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+1'" alt="Slider Image 1">
+            </div>
+            <div class="slide">
+                <img src="images/slider/slide2.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+2'" alt="Slider Image 2">
+            </div>
+            <div class="slide">
+                <img src="images/slider/slide3.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+3'" alt="Slider Image 3">
+            </div>
+            <div class="slide">
+                <img src="images/slider/slide4.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+4'" alt="Slider Image 4">
+            </div>
+            <div class="slide">
+                <img src="images/slider/slide5.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+5'" alt="Slider Image 5">
+            </div>
+        </div>
+        <div class="container">
+            <div class="sidebar">
+                <h3>Sections</h3>
+                <button onclick="loadSection('used')">Used Mobile</button>
+                <button onclick="loadSection('parts')">Mobile Parts</button>
+                <button onclick="loadSection('watch')">Smartwatches</button>
+                <button onclick="loadSection('tablet')">Tablets</button>
+                <button onclick="loadSection('repair')">Mobile Repair</button>
+            </div>
+
+            <div class="main-content">
+                
+                <h2>Popular Sections</h2>
+                <div id="section-slider-container">
+                    <div class="section-slide current" onclick="loadSection('used')">
+                        <img src="dummy_used_mobile_banner.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/800x250?text=USED+MOBILES'" alt="Used Mobiles">
+                        <div class="slide-content">
+                            <h3>📱 استعمال شدہ موبائل</h3>
+                            <p>Behtareen halat mein kam qeemat par. PTA Approved!</p>
+                        </div>
+                    </div>
+                    <div class="section-slide" onclick="loadSection('parts')">
+                        <img src="dummy_parts_banner.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/800x250?text=MOBILE+PARTS'" alt="Mobile Parts">
+                        <div class="slide-content">
+                            <h3>🔩 موبائل کے پرزے</h3>
+                            <p>Original Screens, Batteries, aur Motherboards.</p>
+                        </div>
+                    </div>
+                    <div class="section-slide" onclick="loadSection('watch')">
+                        <img src="dummy_watch_banner.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/800x250?text=SMARTWATCHES'" alt="Smartwatches">
+                        <div class="slide-content">
+                            <h3>⌚ اسمارٹ واچ</h3>
+                            <p>Fitness trackers aur latest smartwatches ki wide range.</p>
+                        </div>
+                    </div>
+                    <div class="section-slide" onclick="loadSection('tablet')">
+                        <img src="dummy_tablet_banner.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/800x250?text=TABLETS'" alt="Tablets">
+                        <div class="slide-content">
+                            <h3>💻 ٹیبلیٹس</h3>
+                            <p>Har qism ki tablets aur accessories. Best for work and study.</p>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin: 40px 0;">
+
+                <h2 id="current-section-title">Used Mobiles (Featured)</h2>
+                <div class="product-grid" id="product-display">
+                    <div class="product-card">
+                        <img src="dummy_product_1.jpg" alt="Samsung Used" 
+                             onmouseover="toggleZoom(this, true)" onmouseout="toggleZoom(this, false)"
+                             ontouchstart="toggleZoom(this, true)" ontouchend="toggleZoom(this, false)">
+                        <h4>Samsung Galaxy S20 (Used)</h4>
+                        
+                        <div class="status-dropdown-container">
+                            <button class="status-button" onclick="toggleStatusDropdown(this)">Status Dekhein ▼</button>
+                            <div class="status-options">
+                                <button class="status-approved" onclick="alertStatus('PTA Approved')">PTA Approved</button>
+                                <button class="status-nonpta" onclick="alertStatus('Non-PTA')">Non-PTA</button>
+                                <button class="status-official" onclick="alertStatus('Official Warranty')">Official Warranty</button>
+                                <button class="status-repair" onclick="alertStatus('Needs Repair')">Repair/Open</button>
+                            </div>
+                        </div>
+
+                        <p class="product-price">Rs 65,000</p>
+                        <div class="product-actions">
+                            <button class="whatsapp-call" onclick="callWhatsApp('Samsung Galaxy S20')">📞 WhatsApp Call</button>
+                            <button onclick="alert('Product Details Page')">View</button>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <img src="dummy_product_2.jpg" alt="iPhone Used" 
+                             onmouseover="toggleZoom(this, true)" onmouseout="toggleZoom(this, false)"
+                             ontouchstart="toggleZoom(this, true)" ontouchend="toggleZoom(this, false)">
+                        <h4>iPhone 12 Pro (Used)</h4>
+
+                        <div class="status-dropdown-container">
+                            <button class="status-button" onclick="toggleStatusDropdown(this)">Status Dekhein ▼</button>
+                            <div class="status-options">
+                                <button class="status-approved" onclick="alertStatus('PTA Approved')">PTA Approved</button>
+                                <button class="status-nonpta" onclick="alertStatus('Non-PTA')">Non-PTA</button>
+                                <button class="status-official" onclick="alertStatus('Official Warranty')">Official Warranty</button>
+                                <button class="status-repair" onclick="alertStatus('Needs Repair')">Repair/Open</button>
+                            </div>
+                        </div>
+                        
+                        <p class="product-price">Rs 140,000</p>
+                        <div class="product-actions">
+                             <button class="whatsapp-call" onclick="callWhatsApp('iPhone 12 Pro')">📞 WhatsApp Call</button>
+                            <button onclick="alert('Product Details Page')">View</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 50px;">Order & Checkout</h3>
+                <p>Add items to cart, then click 'Order Now (Pay Rs)' to finalize.</p>
+                <button onclick="placeOrder()" style="background-color: #dc3545; padding: 15px; font-size: 1.2em; width: 50%; border: none; color: white; cursor: pointer; border-radius: 8px;">Order Now (Pay Rs)</button>
+                
+                <a id="whatsapp-order-btn" href="#" target="_blank" style="display: none;">📞 WhatsApp Chat & Call Link</a>
+
+            </div>
+        </div>
+        
+        <footer>
+            <p style="text-align: center; padding: 20px; background-color: #333; color: white; margin: 0;">&copy; 2025 Techby.pk. All Rights Reserved. | Contact: +923001234567</p>
+        </footer>
+    </div>
+
+    <div id="confetti-container"></div>
+
+    <script>
+        // --- 1. Animation Logic (Preloader/Slide Up) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const preloader = document.getElementById('preloader');
+            const logoTarget = document.getElementById('logo-animate-target');
+            const body = document.body;
+
+            // Animate logo to center
+            setTimeout(() => {
+                logoTarget.classList.add('logo-ready');
+            }, 500); 
+
+            // Open curtains and load main website
+            setTimeout(() => {
+                preloader.classList.add('curtains-open');
+                
+                setTimeout(() => {
+                    body.classList.add('loaded');
+                }, 1000); 
+            }, 1500);
+            
+            // Close dropdown if user clicks anywhere else
+            document.addEventListener('click', (e) => {
+                if (!e.target.matches('.status-button')) {
+                    closeAllDropdowns();
+                }
+            });
+        });
+
+        // --- 0.1 FEATURED PRODUCT SLIDER Logic (5 seconds, 5 images) ---
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slider-container .slide');
+        const intervalTime = 5000; // 5000 milliseconds = 5 seconds
+
+        function showSlides() {
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            slideIndex++;
+
+            if (slideIndex > slides.length) {
+                slideIndex = 1;
+            }
+
+            if (slides.length > 0) {
+                slides[slideIndex - 1].classList.add('active');
+            }
+        }
+
+        if (slides.length > 0) {
+            showSlides();
+            setInterval(showSlides, intervalTime);
+        }
+        // --- FEATURED PRODUCT SLIDER Logic END ---
+
+        // --- 0.2 SECTION BANNER SLIDER Logic (5 seconds, 4 sections) ---
+        let sectionSlideIndex = 0;
+        const sectionSlides = document.querySelectorAll('.section-slide');
+        const sectionIntervalTime = 5000; 
+
+        function showSectionSlides() {
+            sectionSlides.forEach(slide => {
+                slide.classList.remove('current');
+            });
+
+            sectionSlideIndex++;
+
+            if (sectionSlideIndex > sectionSlides.length) {
+                sectionSlideIndex = 1;
+            }
+
+            if (sectionSlides.length > 0) {
+                sectionSlides[sectionSlideIndex - 1].classList.add('current');
+            }
+        }
+
+        // Start the automatic change every 5 seconds for sections
+        if (sectionSlides.length > 0) {
+            showSectionSlides();
+            setInterval(showSectionSlides, sectionIntervalTime);
+        }
+        // --- SECTION BANNER SLIDER Logic END ---
+
+
+        // --- 2. Functional Logic ---
+        let cartCount = 0;
+        const MY_WHATSAPP_NUMBER = '923369039000'; // User's requested number
+
+        // WHATSAPP CALL LOGIC (New Function)
+        function callWhatsApp(productName) {
+            // WhatsApp Web/App will try to open a call link. The '+' is important for international format.
+            // On mobile, this will usually prompt for a WhatsApp call. On desktop, it might open a chat.
+            const url = `https://wa.me/${MY_WHATSAPP_NUMBER.replace(/^0+/, '')}?text=${encodeURIComponent(`Salam. Mein ${productName} (Rs ${document.activeElement.parentElement.previousElementSibling.innerText.split(' ')[1] || 'N/A'}) ke baaray mein foran baat karna chahta/chahti hoon. Call receive karein. (Please call me regarding this product.)`)}`;
+            
+            // For a direct attempt at a call link (though support varies greatly):
+            // const callUrl = `whatsapp://call?number=${MY_WHATSAPP_NUMBER.replace(/^0+/, '+92')}`;
+            // window.open(callUrl, '_self');
+
+            alert(`Aap ${productName} ke liye ${MY_WHATSAPP_NUMBER} par WhatsApp call shuru kar rahe hain. Browser naye tab mein redirect hoga. (You are starting a WhatsApp chat/call for ${productName}. The browser will redirect in a new tab.)`);
+            window.open(url, '_blank');
+        }
+
+        // STATUS DROPDOWN LOGIC
+        function closeAllDropdowns() {
+            const dropdowns = document.querySelectorAll('.status-options.show');
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+        }
+        
+        function toggleStatusDropdown(buttonElement) {
+            const dropdown = buttonElement.nextElementSibling;
+            closeAllDropdowns();
+            dropdown.classList.toggle('show');
+        }
+
+        function alertStatus(status) {
+            alert('Aapne select kiya: ' + status);
+            closeAllDropdowns();
+        }
+
+        // SEARCH BAR LOGIC
+        function performSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            const searchButton = document.getElementById('search-button');
+            const searchText = document.getElementById('search-text');
+            const searchSpinner = document.getElementById('search-spinner');
+            const searchInput = document.getElementById('search-input');
+
+            if (query === "") {
+                alert("Please enter a search term.");
+                return;
+            }
+                
+            searchText.style.display = 'none';
+            searchSpinner.style.display = 'block';
+
+            // Simulate search delay (1.5 seconds)
+            setTimeout(() => {
+                alert(`Searching for: "${query}". (This is a simulation)`);
+                searchText.style.display = 'block';
+                searchSpinner.style.display = 'none';
+                searchInput.value = '';
+            }, 1500);
+        }
+
+        // Trigger search on Enter keypress
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        // CART LOGIC (Still functional, but replaced in product cards for 'Call')
+        function addToCart(productId) {
+            cartCount++;
+            document.getElementById('cart-count').innerText = cartCount;
+            showConfetti(); 
+        }
+
+        // SECTION/BRAND LOADING (Simulates filtering and changes the title)
+        function loadSection(sectionName) {
+            const titleElement = document.getElementById('current-section-title');
+            let title = '';
+            
+            switch(sectionName) {
+                case 'used': title = 'استعمال شدہ موبائل (Used Mobiles)'; break;
+                case 'parts': title = 'موبائل کے پرزے (Mobile Parts)'; break;
+                case 'watch': title = 'اسمارٹ واچ (Smartwatches)'; break;
+                case 'tablet': title = 'ٹیبلیٹس (Tablets)'; break;
+                case 'repair': title = 'موبائل مرمت (Mobile Repair)'; break;
+                default: title = 'خصوصی مصنوعات (Featured Products)';
+            }
+            titleElement.innerText = title;
+            // Scroll to the products section
+            window.scrollTo({ top: titleElement.offsetTop - 70, behavior: 'smooth' });
+        }
+
+        function loadBrand(brandName) {
+            alert(`Filtering products for brand: ${brandName.toUpperCase()}. (Simulation)`);
+            toggleStickyMenu(false);
+        }
+
+        // IMAGE ZOOM LOGIC 
+        function toggleZoom(imgElement, isZoomed) {
+            if (isZoomed) {
+                imgElement.classList.add('zoomed');
+            } else {
+                imgElement.classList.remove('zoomed');
+            }
+        }
+
+        // STICKY MENU LOGIC 
+        function toggleStickyMenu(shouldOpen) {
+            const menu = document.getElementById('right-sticky-menu');
+            if (shouldOpen) {
+                menu.classList.add('active');
+            } else {
+                menu.classList.remove('active');
+            }
+        }
+
+        // ORDER LOGIC 
+        function placeOrder() {
+            if (cartCount === 0) {
+                alert('Cart khali hai! Pehle items add karein. (Cart is empty! Please add items first.)');
+                return;
+            }
+            
+            const orderMessage = `Mai Techby.pk se ${cartCount} items ka order place karna chahta/chahti hoon. Kripya mujhe total cost aur payment details faraham karein. (I want to place an order for ${cartCount} items from Techby.pk. Please provide me with the total cost and payment details.)`;
+            
+            const whatsappLink = `https://wa.me/${MY_WHATSAPP_NUMBER.replace(/^0+/, '')}?text=${encodeURIComponent(orderMessage)}`;
+            
+            const whatsappBtn = document.getElementById('whatsapp-order-btn');
+            whatsappBtn.href = whatsappLink;
+            whatsappBtn.innerText = `📞 WhatsApp Order (${cartCount} Items)`;
+            whatsappBtn.style.display = 'block';
+
+            alert("Order place karne ke liye, ab aap WhatsApp par redirect honge. (To place the order, you will now be redirected to WhatsApp.)");
+            
+            window.open(whatsappLink, '_blank');
+        }
+
+        // CONFETTI LOGIC 
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.width = Math.random() * 8 + 'px';
+            confetti.style.height = confetti.style.width;
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.position = 'absolute';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.top = Math.random() * 100 + 'vh';
+            confetti.style.opacity = Math.random();
+            confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear infinite`;
+            return confetti;
+        }
+
+        function showConfetti() {
+            const container = document.getElementById('confetti-container');
+            container.style.display = 'block';
+            
+            for (let i = 0; i < 50; i++) { 
+                container.appendChild(createConfetti());
+            }
+
+            setTimeout(() => {
+                container.style.display = 'none';
+                container.innerHTML = '';
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
