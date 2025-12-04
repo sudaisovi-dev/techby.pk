@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ur">
 <head>
@@ -23,6 +21,8 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
             z-index: 1500; overflow: hidden;
+            background-color: #000000; /* Added black background to ensure visibility */
+            transition: opacity 0.5s ease-out; /* Added fade-out transition */
         }
         .preloader-curtain {
             position: absolute; top: 0; left: 0; height: 100%; width: 50%;
@@ -65,7 +65,7 @@
             transform: translateY(0); 
             opacity: 1;
         }
-        .loaded #preloader { display: none; }
+        .loaded #preloader { opacity: 0; pointer-events: none; } /* Better way to hide preloader */
 
         /* 1.3. Header (Fixed) */
         header { 
@@ -379,7 +379,7 @@
 
     <div id="preloader">
         <div class="brand-container" id="logo-animate-target">
-            <img src="images/techby_logo.png" 
+            <img src="techby_logo.png" 
                  onerror="this.onerror=null; this.outerHTML='<p class=\'logo-text\'>Techby.pk</p>'" 
                  alt="Techby.pk Logo">
         </div>
@@ -391,22 +391,22 @@
         <h4 id="sticky-title">BRANDS</h4>
         <ul class="brand-list">
             <li onclick="loadBrand('apple')">
-                <img src="images/apple_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=A'" alt="Apple Logo"> Apple / iPhone
+                <img src="apple_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=A'" alt="Apple Logo"> Apple / iPhone
             </li>
             <li onclick="loadBrand('samsung')">
-                <img src="images/samsung_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=S'" alt="Samsung Logo"> Samsung
+                <img src="samsung_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=S'" alt="Samsung Logo"> Samsung
             </li>
             <li onclick="loadBrand('xiaomi')">
-                <img src="images/xiaomi_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=X'" alt="Xiaomi Logo"> Xiaomi / Redmi
+                <img src="xiaomi_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=X'" alt="Xiaomi Logo"> Xiaomi / Redmi
             </li>
             <li onclick="loadBrand('oppo')">
-                <img src="images/oppo_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=O'" alt="Oppo Logo"> Oppo / Vivo
+                <img src="oppo_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=O'" alt="Oppo Logo"> Oppo / Vivo
             </li>
             <li onclick="loadBrand('huawei')">
-                <img src="images/huawei_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=H'" alt="Huawei Logo"> Huawei / Honor
+                <img src="huawei_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=H'" alt="Huawei Logo"> Huawei / Honor
             </li>
             <li onclick="loadBrand('other')">
-                <img src="images/other_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=?'" alt="Other Logo"> Other Brands
+                <img src="other_logo.png" onerror="this.onerror=null;this.src='https://via.placeholder.com/24?text=?'" alt="Other Logo"> Other Brands
             </li>
         </ul>
     </div>
@@ -415,7 +415,7 @@
     <div id="main-website">
         
         <header>
-            <div class="logo-name">**Techby.pk**</div>
+            <div class="logo-name">*Techby.pk*</div>
             
             <div class="search-container">
                 <input type="text" id="search-input" placeholder="Search Mobile, Parts, or Brand..." onkeypress="checkEnter(event)">
@@ -432,19 +432,19 @@
 
         <div class="slider-container">
             <div class="slide active">
-                <img src="images/slider/slide1.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+1'" alt="Slider Image 1">
+                <img src="slide1.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+1'" alt="Slider Image 1">
             </div>
             <div class="slide">
-                <img src="images/slider/slide2.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+2'" alt="Slider Image 2">
+                <img src="slide2.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+2'" alt="Slider Image 2">
             </div>
             <div class="slide">
-                <img src="images/slider/slide3.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+3'" alt="Slider Image 3">
+                <img src="slide3.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+3'" alt="Slider Image 3">
             </div>
             <div class="slide">
-                <img src="images/slider/slide4.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+4'" alt="Slider Image 4">
+                <img src="slide4.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+4'" alt="Slider Image 4">
             </div>
             <div class="slide">
-                <img src="images/slider/slide5.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+5'" alt="Slider Image 5">
+                <img src="slide5.jpg" onerror="this.onerror=null;this.src='https://via.placeholder.com/1200x400?text=SLIDER+IMAGE+5'" alt="Slider Image 5">
             </div>
         </div>
         <div class="container">
@@ -558,25 +558,37 @@
 
     <script>
         // --- 1. Animation Logic (Preloader/Slide Up) ---
+        // Aehmiyat: Yeh section ab zaroori taur par chalega taake screen blank na rahe.
         document.addEventListener('DOMContentLoaded', () => {
             const preloader = document.getElementById('preloader');
             const logoTarget = document.getElementById('logo-animate-target');
             const body = document.body;
 
-            // Animate logo to center
+            // Step 1: Animate logo to center immediately
             setTimeout(() => {
                 logoTarget.classList.add('logo-ready');
-            }, 500); 
+            }, 100); 
 
-            // Open curtains and load main website
-            setTimeout(() => {
+            // Step 2: Open curtains and load main website (Forced to load after 2 seconds)
+            // Agar koi image load na bhi ho, toh bhi ye 2.5 seconds mein website ko dikha dega.
+            const forcedLoad = setTimeout(() => {
                 preloader.classList.add('curtains-open');
                 
                 setTimeout(() => {
                     body.classList.add('loaded');
                 }, 1000); 
-            }, 1500);
+            }, 2000); // 2 seconds baad load lazmi hoga
             
+            // Clear forced load if actual load happens first (optional)
+            window.addEventListener('load', () => {
+                clearTimeout(forcedLoad);
+                preloader.classList.add('curtains-open');
+                setTimeout(() => {
+                    body.classList.add('loaded');
+                }, 1000);
+            });
+
+
             // Close dropdown if user clicks anywhere else
             document.addEventListener('click', (e) => {
                 if (!e.target.matches('.status-button')) {
@@ -649,13 +661,13 @@
         function callWhatsApp(productName) {
             // WhatsApp Web/App will try to open a call link. The '+' is important for international format.
             // On mobile, this will usually prompt for a WhatsApp call. On desktop, it might open a chat.
-            const url = `https://wa.me/${MY_WHATSAPP_NUMBER.replace(/^0+/, '')}?text=${encodeURIComponent(`Salam. Mein ${productName} (Rs ${document.activeElement.parentElement.previousElementSibling.innerText.split(' ')[1] || 'N/A'}) ke baaray mein foran baat karna chahta/chahti hoon. Call receive karein. (Please call me regarding this product.)`)}`;
+            const url = https://wa.me/${MY_WHATSAPP_NUMBER.replace(/^0+/, '')}?text=${encodeURIComponent(`Salam. Mein ${productName} (Rs ${document.activeElement.parentElement.previousElementSibling.innerText.split(' ')[1] || 'N/A'}) ke baaray mein foran baat karna chahta/chahti hoon. Call receive karein. (Please call me regarding this product.))}`;
             
             // For a direct attempt at a call link (though support varies greatly):
-            // const callUrl = `whatsapp://call?number=${MY_WHATSAPP_NUMBER.replace(/^0+/, '+92')}`;
+            // const callUrl = whatsapp://call?number=${MY_WHATSAPP_NUMBER.replace(/^0+/, '+92')};
             // window.open(callUrl, '_self');
 
-            alert(`Aap ${productName} ke liye ${MY_WHATSAPP_NUMBER} par WhatsApp call shuru kar rahe hain. Browser naye tab mein redirect hoga. (You are starting a WhatsApp chat/call for ${productName}. The browser will redirect in a new tab.)`);
+            alert(Aap ${productName} ke liye ${MY_WHATSAPP_NUMBER} par WhatsApp call shuru kar rahe hain. Browser naye tab mein redirect hoga. (You are starting a WhatsApp chat/call for ${productName}. The browser will redirect in a new tab.));
             window.open(url, '_blank');
         }
 
@@ -696,7 +708,7 @@
 
             // Simulate search delay (1.5 seconds)
             setTimeout(() => {
-                alert(`Searching for: "${query}". (This is a simulation)`);
+                alert(Searching for: "${query}". (This is a simulation));
                 searchText.style.display = 'block';
                 searchSpinner.style.display = 'none';
                 searchInput.value = '';
@@ -736,7 +748,7 @@
         }
 
         function loadBrand(brandName) {
-            alert(`Filtering products for brand: ${brandName.toUpperCase()}. (Simulation)`);
+            alert(Filtering products for brand: ${brandName.toUpperCase()}. (Simulation));
             toggleStickyMenu(false);
         }
 
@@ -766,13 +778,13 @@
                 return;
             }
             
-            const orderMessage = `Mai Techby.pk se ${cartCount} items ka order place karna chahta/chahti hoon. Kripya mujhe total cost aur payment details faraham karein. (I want to place an order for ${cartCount} items from Techby.pk. Please provide me with the total cost and payment details.)`;
+            const orderMessage = Mai Techby.pk se ${cartCount} items ka order place karna chahta/chahti hoon. Kripya mujhe total cost aur payment details faraham karein. (I want to place an order for ${cartCount} items from Techby.pk. Please provide me with the total cost and payment details.);
             
-            const whatsappLink = `https://wa.me/${MY_WHATSAPP_NUMBER.replace(/^0+/, '')}?text=${encodeURIComponent(orderMessage)}`;
+            const whatsappLink = https://wa.me/${MY_WHATSAPP_NUMBER.replace(/^0+/, '')}?text=${encodeURIComponent(orderMessage)};
             
             const whatsappBtn = document.getElementById('whatsapp-order-btn');
             whatsappBtn.href = whatsappLink;
-            whatsappBtn.innerText = `📞 WhatsApp Order (${cartCount} Items)`;
+            whatsappBtn.innerText = 📞 WhatsApp Order (${cartCount} Items);
             whatsappBtn.style.display = 'block';
 
             alert("Order place karne ke liye, ab aap WhatsApp par redirect honge. (To place the order, you will now be redirected to WhatsApp.)");
@@ -786,12 +798,12 @@
             confetti.classList.add('confetti');
             confetti.style.width = Math.random() * 8 + 'px';
             confetti.style.height = confetti.style.width;
-            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.backgroundColor = hsl(${Math.random() * 360}, 100%, 50%);
             confetti.style.position = 'absolute';
             confetti.style.left = Math.random() * 100 + 'vw';
             confetti.style.top = Math.random() * 100 + 'vh';
             confetti.style.opacity = Math.random();
-            confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear infinite`;
+            confetti.style.animation = fall ${Math.random() * 3 + 2}s linear infinite;
             return confetti;
         }
 
